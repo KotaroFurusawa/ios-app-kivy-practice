@@ -1,7 +1,65 @@
+#: import utils kivy.utils
 
 <HomeScreen>:
-    Button:
-        text:
-            "You are at home screen"
-        on_release:
-            app.change_screen("settings_screen")
+    FloatLayout:
+        canvas:
+            #背景指定
+            Color: 
+                rgb:utils.get_color_from_hex("#39B3F2")
+            Rectangle:
+                size:self.size
+                pos:self.pos
+        GridLayout:
+            #ヘッダー
+            rows:1
+            pos_hint:{"top":1,"left":1} #一番左上
+            size_hint:1,0.1 #横：ウインドウ幅の1倍，縦：ウインドウ高の0.1倍
+            Image:
+                source:"icons/002-sunrise.png"
+            Image:
+                source:"icons/001-sun.png"
+        GridLayout:
+            #プロフィール画像等表示
+            rows:1
+            pos_hint:{"top":0.9,"left":1} 
+            size_hint:1,0.2
+            Image:
+                source:"icons/003-sunset.png"
+            Image:
+                source:"icons/profile.jpg"
+            Image:
+                source:"icons/007-crescent-moon.png"
+        Label:
+            #タイトル
+            pos_hint:{"top":0.7,"left":1} 
+            size_hint:1,0.1
+            text:"12 Days Streak"
+            id:streak_label
+        GridLayout:
+            #メニュー
+            cols:1
+            pos_hint:{"top":0.6,"left":1} 
+            size_hint:1,0.4
+        GridLayout:
+            #フッター
+            rows:1
+            pos_hint:{"top":0.2,"left":1} 
+            size_hint:1,0.2
+            ImageButton:
+                source:"icons/add.png"
+                on_release:
+                    print("RELEASED_ADD")
+            ImageButton:
+                source:"icons/settings.png"
+                on_release:
+                    print("RELEASED_SETTINGS")
+            ImageButton:
+                source:"icons/time.png"
+                on_press:
+                    self.source = "icons/profile.jpg"
+                on_release:
+                    self.source = "icons/time.png"
+                    print("RELEASED_TIME")
+
+            
+            
