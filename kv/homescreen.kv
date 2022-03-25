@@ -36,12 +36,19 @@
             size_hint:1,0.1
             text:"12 Days Streak"
             id:streak_label
-        GridLayout:
-            #バナー
-            id:banner_grid
-            cols:1
+        ScrollView:
+            #この中はスクロール可能
             pos_hint:{"top":0.6,"left":1} 
             size_hint:1,0.4
+            GridLayout:
+                #workoutの一覧を表示
+                id:banner_grid
+                cols:1
+                spacing:10,10
+                size_hint_y:None
+                height:self.minimum_height
+                row_default_height:"100dp"
+                row_force_default:True
         GridLayout:
             #フッター
             rows:1
@@ -60,7 +67,7 @@
                 on_press:
                     self.source = "icons/avatars/man.png"
                 on_release:
-                    self.source = "icons/time.png"
+                    self.source = "icons/workouts/ice-hockey.png"
                     print("RELEASED_ICE-HOCKEY")
 
             
