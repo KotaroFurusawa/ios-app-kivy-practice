@@ -27,6 +27,7 @@
                 source:"icons/003-sunset.png"
             Image:
                 source:"icons/avatars/man.png"
+                id:avatar_image
             Image:
                 source:"icons/007-crescent-moon.png"
         Label:
@@ -36,7 +37,8 @@
             text:"12 Days Streak"
             id:streak_label
         GridLayout:
-            #メニュー
+            #バナー
+            id:banner_grid
             cols:1
             pos_hint:{"top":0.6,"left":1} 
             size_hint:1,0.4

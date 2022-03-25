@@ -36,13 +36,21 @@ class MainApp(App):
         result = requests.get(f"{api_url}{self.my_friend_id}.json")
         data = json.loads(result.content.decode())
 
+        # streakラベルをDBのdataから設定
+        streak_label = self.root.ids["home_screen"].ids["streak_label"]
+        streak_label.text = str(data['streak']) + " Day Streak!"
+
+        # プロフィール画像をDBのdataから設定
+        avatar_image = self.root.ids["home_screen"].ids["avatar_image"]
+        avatar_image.source = "icons/avatars/" + data["avatar"]
+
         workouts = data["workouts"][1:]
         for workout in workouts:
             print(workout["workout_img"])
             print(workout["units"])
 
     def change_screen(self, screen_name):
-        screen_manager = self.root.ids["screem_manager"]
+        screen_manager = self.root.ids["screen_manager"]
         # rootはmain.kvのGridLayout(rootウィジェット)のこと
         screen_manager.current = screen_name
         # 現在のスクリーンを変更する
