@@ -26,7 +26,7 @@
             Image:
                 source:"icons/003-sunset.png"
             Image:
-                source:"icons/profile.jpg"
+                source:"icons/avatars/man.png"
             Image:
                 source:"icons/007-crescent-moon.png"
         Label:
@@ -46,20 +46,20 @@
             pos_hint:{"top":0.2,"left":1} 
             size_hint:1,0.2
             ImageButton:
-                source:"icons/add.png"
+                source:"icons/007-add-friend.png"
                 on_release:
-                    print("RELEASED_ADD")
+                    print("RELEASED_ADD-FRIEND")
             ImageButton:
-                source:"icons/settings.png"
+                source:"icons/workouts/football.png"
                 on_release:
-                    print("RELEASED_SETTINGS")
+                    print("RELEASED_FOOTBALL")
             ImageButton:
-                source:"icons/time.png"
+                source:"icons/workouts/ice-hockey.png"
                 on_press:
-                    self.source = "icons/profile.jpg"
+                    self.source = "icons/avatars/man.png"
                 on_release:
                     self.source = "icons/time.png"
-                    print("RELEASED_TIME")
+                    print("RELEASED_ICE-HOCKEY")
 
             
             
