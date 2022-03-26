@@ -3,6 +3,7 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.uix.button import ButtonBehavior
 from kivy.uix.image import Image
+from kivy.uix.label import Label
 from workoutbanner import WorkoutBanner
 import requests
 import json
@@ -13,6 +14,10 @@ class HomeScreen(Screen):
 
 
 class ImageButton(ButtonBehavior, Image):
+    pass
+
+
+class LabelButton(ButtonBehavior, Label):
     pass
 
 
@@ -39,6 +44,11 @@ class MainApp(App):
         # streakラベルをDBのdataから設定
         streak_label = self.root.ids["home_screen"].ids["streak_label"]
         streak_label.text = str(data['streak']) + " Day Streak!"
+
+        # 自分のフレンドIDを
+        # 設定
+        friend_id_label = self.root.ids["settings_screen"].ids["friend_id_label"]
+        friend_id_label.text = "Friend ID: " + str(self.my_friend_id)
 
         # プロフィール画像をDBのdataから設定
         avatar_image = self.root.ids["avatar_image"]
