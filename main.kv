@@ -3,12 +3,56 @@
 
 GridLayout:
     cols:1
-    
-    ScreenManager:
-        id: screen_manager
-        HomeScreen:
-            name:"home_screen"
-            id:home_screen
-        SettingsScreen:
-            name:"settings_screen"
-            id:settings_screen
+    FloatLayout:
+        GridLayout:
+            canvas:
+                #背景指定
+                Color: 
+                    rgb:utils.get_color_from_hex("#39B3F2")
+                Rectangle:
+                    size:self.size
+                    pos:self.pos
+            #ヘッダー
+            rows:1
+            pos_hint:{"top":1,"left":1} #一番左上
+            size_hint:1,0.05 #横：ウインドウ幅の1倍，縦：ウインドウ高の0.05倍
+            Image:
+                source:"icons/002-sunrise.png"
+            Image:
+                source:"icons/001-sun.png"
+        FloatLayout:
+            canvas:
+                #背景指定
+                Color: 
+                    rgb:utils.get_color_from_hex("#39B3F2")
+                Rectangle:
+                    size:self.size
+                    pos:self.pos
+            #プロフィール画像等表示
+            rows:1
+            pos_hint:{"top":0.95,"left":1} 
+            size_hint:1,0.15
+            Image:
+                source:"icons/003-sunset.png"
+                size_hint:0.25,0.5
+                pos_hint:{"top":1,"right":0.25}
+            Image:
+                source:"icons/avatars/man.png"
+                id:avatar_image
+                size_hint:0.5,1
+                pos_hint:{"top":1,"right":0.75}
+            Image:
+                source:"icons/007-crescent-moon.png"
+                size_hint:0.25,0.5
+                pos_hint:{"top":1,"right":1}
+
+        ScreenManager:
+            size_hint:1,0.799
+            pos_hint:{"top":0.799,"left":1}
+            id: screen_manager
+            HomeScreen:
+                name:"home_screen"
+                id:home_screen
+            SettingsScreen:
+                name:"settings_screen"
+                id:settings_screen

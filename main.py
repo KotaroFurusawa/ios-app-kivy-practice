@@ -41,7 +41,7 @@ class MainApp(App):
         streak_label.text = str(data['streak']) + " Day Streak!"
 
         # プロフィール画像をDBのdataから設定
-        avatar_image = self.root.ids["home_screen"].ids["avatar_image"]
+        avatar_image = self.root.ids["avatar_image"]
         avatar_image.source = "icons/avatars/" + data["avatar"]
 
         # 人気のトレーニングをホームスクリーンに表示

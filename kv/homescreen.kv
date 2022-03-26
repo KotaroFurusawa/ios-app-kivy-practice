@@ -9,37 +9,16 @@
             Rectangle:
                 size:self.size
                 pos:self.pos
-        GridLayout:
-            #ヘッダー
-            rows:1
-            pos_hint:{"top":1,"left":1} #一番左上
-            size_hint:1,0.1 #横：ウインドウ幅の1倍，縦：ウインドウ高の0.1倍
-            Image:
-                source:"icons/002-sunrise.png"
-            Image:
-                source:"icons/001-sun.png"
-        GridLayout:
-            #プロフィール画像等表示
-            rows:1
-            pos_hint:{"top":0.9,"left":1} 
-            size_hint:1,0.2
-            Image:
-                source:"icons/003-sunset.png"
-            Image:
-                source:"icons/avatars/man.png"
-                id:avatar_image
-            Image:
-                source:"icons/007-crescent-moon.png"
         Label:
             #タイトル
-            pos_hint:{"top":0.7,"left":1} 
+            pos_hint:{"top":1,"left":1} 
             size_hint:1,0.1
             text:"12 Days Streak"
             id:streak_label
         ScrollView:
             #この中はスクロール可能
-            pos_hint:{"top":0.6,"left":1} 
-            size_hint:1,0.4
+            pos_hint:{"top":0.9,"left":1} 
+            size_hint:1,0.75
             GridLayout:
                 #workoutの一覧を表示
                 id:banner_grid
@@ -52,23 +31,18 @@
         GridLayout:
             #フッター
             rows:1
-            pos_hint:{"top":0.2,"left":1} 
-            size_hint:1,0.2
+            pos_hint:{"top":0.15,"left":1} 
+            size_hint:1,0.15
             ImageButton:
-                source:"icons/007-add-friend.png"
-                on_release:
-                    print("RELEASED_ADD-FRIEND")
+                source:"icons/add.png"
             ImageButton:
-                source:"icons/workouts/football.png"
+                source:"icons/friends_list.png"
                 on_release:
                     print("RELEASED_FOOTBALL")
             ImageButton:
-                source:"icons/workouts/ice-hockey.png"
-                on_press:
-                    self.source = "icons/avatars/man.png"
+                source:"icons/settings.png"
                 on_release:
-                    self.source = "icons/workouts/ice-hockey.png"
-                    print("RELEASED_ICE-HOCKEY")
+                    app.change_screen("settings_screen")
 
             
             

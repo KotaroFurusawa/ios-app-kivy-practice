@@ -7,6 +7,7 @@ import kivy.utils
 
 
 class WorkoutBanner(GridLayout):
+    # workoutをホームスクリーンに表示
     rows = 1
 
     def __init__(self, **kwargs):
