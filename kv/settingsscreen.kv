@@ -1,13 +1,13 @@
 
 <SettingsScreen>:
+    canvas:
+        #背景指定
+        Color: 
+            rgb:utils.get_color_from_hex("#39B3F2")
+        Rectangle:
+            size:self.size
+            pos:self.pos
     FloatLayout:
-        canvas:
-            #背景指定
-            Color: 
-                rgb:utils.get_color_from_hex("#39B3F2")
-            Rectangle:
-                size:self.size
-                pos:self.pos
         Label:
             id:friend_id_label
             text:"Friend ID: "
@@ -18,7 +18,7 @@
             pos_hint:{"top":.7,"left":1}
             source:"icons/avatars/man.png"
             on_release:
-                print("Change avatar")
+                app.change_screen("change_avatar_screen")
         LabelButton:
             size_hint:.3,.2
             pos_hint:{"top":.7,"right":.8}        

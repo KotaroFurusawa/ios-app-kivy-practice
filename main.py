@@ -5,11 +5,21 @@ from kivy.uix.button import ButtonBehavior
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from workoutbanner import WorkoutBanner
+from functools import partial
+from os import walk
 import requests
 import json
 
 
 class HomeScreen(Screen):
+    pass
+
+
+class SettingsScreen(Screen):
+    pass
+
+
+class ChangeAvatarScreen(Screen):
     pass
 
 
@@ -21,25 +31,29 @@ class LabelButton(ButtonBehavior, Label):
     pass
 
 
-class SettingsScreen(Screen):
-    pass
-
-
 GUI = Builder.load_file("main.kv")
 
 
 class MainApp(App):
     my_friend_id = 1
     secret = json.load(open('./settings/secret_setting.json', 'r'))['SECRET']
+    api_url = secret['FIREBASE']['R_DB']['URL']
 
     def build(self):
         return GUI
 
     def on_start(self):
         # dbからデータ取得
-        api_url = self.secret['FIREBASE']['R_DB']['URL']
-        result = requests.get(f"{api_url}{self.my_friend_id}.json")
+        result = requests.get(f"{self.api_url}{self.my_friend_id}.json")
         data = json.loads(result.content.decode())
+
+        # アバターをicons/avatarsから取得
+        avatar_gird = self.root.ids["change_avatar_screen"].ids["avatar_grid"]
+        for root_dir, folders, files in walk("icons/avatars"):
+            for f in files:
+                img = ImageButton(source="icons/avatars/"+f,
+                                  on_release=partial(self.change_avatar, f))
+                avatar_gird.add_widget(img)
 
         # streakラベルをDBのdataから設定
         streak_label = self.root.ids["home_screen"].ids["streak_label"]
@@ -68,6 +82,16 @@ class MainApp(App):
                 units=workout["units"],
                 likes=workout["likes"])
             banner_grid.add_widget(w)
+
+    def change_avatar(self, image, widget_id):
+        # アプリ内のアバターを変更する
+        avatar_image = self.root.ids["avatar_image"]
+        avatar_image.source = "icons/avatars/" + image
+        # firebaseのアバターを変更する
+        my_data = '{"avatar":"%s"}' % image
+        requests.patch(f"{self.api_url}{self.my_friend_id}.json", data=my_data)
+        # 設定画面に戻る
+        self.change_screen("settings_screen")
 
     def change_screen(self, screen_name):
         screen_manager = self.root.ids["screen_manager"]
