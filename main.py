@@ -7,6 +7,7 @@ from kivy.uix.label import Label
 from workoutbanner import WorkoutBanner
 from functools import partial
 from os import walk
+from myfirebase import MyFirebase
 import requests
 import json
 
@@ -20,6 +21,10 @@ class SettingsScreen(Screen):
 
 
 class ChangeAvatarScreen(Screen):
+    pass
+
+
+class LoginScreen(Screen):
     pass
 
 
@@ -40,6 +45,7 @@ class MainApp(App):
     api_url = secret['FIREBASE']['R_DB']['URL']
 
     def build(self):
+        self.my_firebase = MyFirebase()
         return GUI
 
     def on_start(self):
