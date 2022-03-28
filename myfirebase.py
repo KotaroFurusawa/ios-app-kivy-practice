@@ -26,18 +26,29 @@ class MyFirebase():
             idToken = sign_up_data['idToken']
 
             # ファイルにfreshTokenを保存する
-            with open("refres_token.txt", "w") as f:
+            with open("refresh_token.txt", "w") as f:
                 f.write(refresh_token)
+
             # localIdをmain app classに保存する
             app.localId = localId
+
             # idTokenをmain app classに保存する
             app.idToken = idToken
+
+            # firebaseからnext friend idを取得
+            # next_friend_idは次作成されるユーザーの登録番号nのこと(次のユーザーはn人目の登録者)
+            friend_get_req = requests.get(
+                self.api_url+"next_friend_id.json?auth="+idToken)
+            my_friend_id = friend_get_req.json()
+            friend_patch_data = '{"next_friend_id":%s}' % str(my_friend_id+1)
+            frined_patch_req = requests.patch(
+                self.api_url+".json?auth="+idToken, data=friend_patch_data)
+
+            # frined_id = friend_get_req.json()[]
             # localIdから新しくkeyを生成しdbに保存する
-            my_data = '{"avatar": "man.png", "friends": "", "workouts": ""}'
+            my_data = '{"avatar": "man.png", "friends": "", "workouts": "","streak":"0","my_firend_id":%s}' % my_friend_id
             post_request = requests.patch(
                 f"{self.api_url}{localId}.json?auth=" + idToken, data=my_data)
-            print(post_request.ok)
-            print(json.loads(post_request.content.decode()))
 
             app.change_screen("home_screen")
 
@@ -47,5 +58,13 @@ class MyFirebase():
 
             app.root.ids['login_screen'].ids['login_message'].text = error_message
 
-    def sign_in(self):
-        pass
+    def exchange_refresh_token(self, refresh_token):
+        refresh_url = "https://securetoken.googleapis.com/v1/token?key="+self.wak
+        refresh_payload = '{"grant_type":"refresh_token","refresh_token":"%s"}' % refresh_token
+        refresh_req = requests.post(refresh_url, data=refresh_payload)
+        print(refresh_req.ok)
+        print(refresh_req.json())
+
+        id_token = refresh_req.json()['id_token']
+        local_id = refresh_req.json()['user_id']
+        return id_token, local_id
