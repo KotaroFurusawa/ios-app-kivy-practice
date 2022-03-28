@@ -24,6 +24,10 @@ class ChangeAvatarScreen(Screen):
     pass
 
 
+class AddFriendScreen(Screen):
+    pass
+
+
 class LoginScreen(Screen):
     pass
 
@@ -55,7 +59,8 @@ class MainApp(App):
             # 新しいidTokenと，アプリ起動者のlocal_id(user_id的なもの)を取得するためにrefreshTokenを使う
             id_token, local_id = self.my_firebase.exchange_refresh_token(
                 refresh_token)
-
+            self.local_id = local_id  # これによって他のメソッドでもlocal_idが使える
+            self.id_token = id_token
             # dbからデータ取得(idTokenを付与することでdbの読み取り/書き込みが可能に)
             result = requests.get(
                 f"{self.api_url}{local_id}.json?auth={id_token}")
@@ -71,6 +76,8 @@ class MainApp(App):
                                       on_release=partial(self.change_avatar, f))
                     avatar_gird.add_widget(img)
 
+            # friendListをDBから取得
+            self.friends_list = data["friends"]
             # streakラベルをDBのdataから設定
             streak_label = self.root.ids["home_screen"].ids["streak_label"]
             streak_label.text = str(data['streak']) + " Day Streak!"
@@ -105,6 +112,29 @@ class MainApp(App):
 
         except:
             pass
+
+    def add_friend(self, friend_id):
+        # friend_idが存在するか確かめる。
+        check_req = requests.get(
+            self.api_url+'.json?orderBy="my_friend_id"&equalTo='+friend_id)
+        data = check_req.json()
+        if data == {}:
+            # 存在しない場合はその旨を表示
+            self.root.ids["add_friend_screen"].ids['add_friend_label'].text = "Invalid friend ID"
+        else:
+            # 存在すればsuccessと表示し，フレンドリストに追加する
+            key = list(data.keys())[0]
+            new_friend_id = data[key]['my_friend_id']
+            print(new_friend_id)
+            self.root.ids["add_friend_screen"].ids[
+                'add_friend_label'].text = f"Friend ID {friend_id} added successfully."
+
+            self.friends_list = f"{self.friends_list},{friend_id}"
+            patch_data = '{"friends":"%s"}' % self.friends_list
+            patch_req = requests.patch(
+                self.api_url+self.local_id+".json?auth="+self.id_token, data=patch_data)
+            print(patch_req.ok)
+            print(patch_req.json())
 
     def change_avatar(self, image, widget_id):
         # アプリ内のアバターを変更する

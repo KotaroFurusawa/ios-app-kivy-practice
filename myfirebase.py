@@ -46,7 +46,7 @@ class MyFirebase():
 
             # frined_id = friend_get_req.json()[]
             # localIdから新しくkeyを生成しdbに保存する
-            my_data = '{"avatar": "man.png", "friends": "", "workouts": "","streak":"0","my_firend_id":%s}' % my_friend_id
+            my_data = '{"avatar": "man.png", "friends": "", "workouts": "","streak":"0","my_friend_id":%s}' % my_friend_id
             post_request = requests.patch(
                 f"{self.api_url}{localId}.json?auth=" + idToken, data=my_data)
 

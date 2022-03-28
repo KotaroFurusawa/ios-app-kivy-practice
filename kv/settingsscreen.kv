@@ -30,18 +30,18 @@
             pos_hint:{"top":.5,"left":1}
             source:"icons/add.png"
             on_release:
-                print("Add friend")
+                app.change_screen("add_friend_screen")
         LabelButton:
             size_hint:.3,.2
             pos_hint:{"top":.5,"right":.8}        
             text:"Add A Friend"
             on_release:
-                print("Change Avatar")
+                app.change_screen("add_friend_screen")
         ImageButton:
             size_hint:.2,.15
             pos_hint:{"top":.2,"right":0.25}
             source:"icons/back.png"
             on_release:
-                print("Add Friend")
+                app.change_screen("home_screen")
 
         
