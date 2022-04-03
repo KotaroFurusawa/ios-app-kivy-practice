@@ -28,6 +28,10 @@ class AddFriendScreen(Screen):
     pass
 
 
+class AddWorkoutScreen(Screen):
+    pass
+
+
 class LoginScreen(Screen):
     pass
 
@@ -45,6 +49,8 @@ GUI = Builder.load_file("main.kv")
 
 class MainApp(App):
     my_friend_id = 1
+    workout_image = None
+    option_choice = None
     secret = json.load(open('./settings/secret_setting.json', 'r'))['SECRET']
     api_url = secret['FIREBASE']['R_DB']['URL']
 
@@ -52,7 +58,27 @@ class MainApp(App):
         self.my_firebase = MyFirebase()
         return GUI
 
+    def update_workout_image(self, filename, widget_id):
+        self.workout_image = filename
+
     def on_start(self):
+        # アバターをicons/avatarsから取得
+        avatar_gird = self.root.ids["change_avatar_screen"].ids["avatar_grid"]
+        for root_dir, folders, files in walk("icons/avatars"):
+            for f in files:
+                img = ImageButton(source="icons/avatars/"+f,
+                                  on_release=partial(self.change_avatar, f))
+                avatar_gird.add_widget(img)
+
+        # workoutイメージをicons/workoutsから取得
+        workout_image_gird = self.root.ids["add_workout_screen"].ids["workout_image_grid"]
+        for root_dir, folders, files in walk("icons/workouts"):
+            for f in files:
+                if '.png'in f:
+                    img = ImageButton(source="icons/workouts/"+f,
+                                      on_release=partial(self.update_workout_image, f))
+                    workout_image_gird.add_widget(img)
+
         try:
             with open("refresh_token.txt", 'r') as f:
                 refresh_token = f.read()
@@ -67,14 +93,6 @@ class MainApp(App):
             print(result.ok)
             print(result.json())
             data = json.loads(result.content.decode())
-
-            # アバターをicons/avatarsから取得
-            avatar_gird = self.root.ids["change_avatar_screen"].ids["avatar_grid"]
-            for root_dir, folders, files in walk("icons/avatars"):
-                for f in files:
-                    img = ImageButton(source="icons/avatars/"+f,
-                                      on_release=partial(self.change_avatar, f))
-                    avatar_gird.add_widget(img)
 
             # friendListをDBから取得
             self.friends_list = data["friends"]
@@ -93,8 +111,10 @@ class MainApp(App):
 
             # 人気のトレーニングをホームスクリーンに表示
             banner_grid = self.root.ids["home_screen"].ids["banner_grid"]
-            workouts = data["workouts"][1:]
-            for workout in workouts:
+            workouts = data["workouts"]
+            workout_keys = list(workouts.keys())
+            for workout_key in workout_keys:
+                workout = workouts[workout_key]
                 print(workout["workout_img"])
                 print(workout["description"])
                 w = WorkoutBanner(
@@ -145,6 +165,65 @@ class MainApp(App):
         requests.patch(f"{self.api_url}{self.my_friend_id}.json", data=my_data)
         # 設定画面に戻る
         self.change_screen("settings_screen")
+
+    def add_workout(self):
+        # add workout screenで選択されたすべてのデータを取得する
+        workout_ids = self.root.ids['add_workout_screen'].ids
+        # すでに，変数self.workout_imageにworkout_imageは指定されている(workout画像選択時，on_releaseにて)
+        description_input = workout_ids['description_input'].text
+        # すでにoption_choice関数によって(Time or set or distance)は指定されている
+        quantity_input = workout_ids['quantity_input'].text
+        units_input = workout_ids['units_input'].text
+        month_input = workout_ids['month_input'].text
+        day_input = workout_ids['day_input'].text
+        year_input = workout_ids['year_input'].text
+
+        # 入力項目に空欄がないか確認する
+        if self.workout_image == None:
+            print("comeback_to_this")
+            return
+        # descriptionに空白がある場合は許可する
+        if self.option_choice == None:
+            workout_ids['time_label'].color = 1, 0, 0, 1
+            workout_ids['distance_label'].color = 1, 0, 0, 1
+            workout_ids['sets_label'].color = 1, 0, 0, 1
+            return
+        try:
+            int_quantity = float(quantity_input)
+        except:
+            # 何も入力されていない場合、背景を赤くする
+            workout_ids['quantity_input'].background_color = 1, 0, 0, 1
+            return
+
+        if units_input == "":
+            workout_ids['units_input'].background_color = 1, 0, 0, 1
+            return
+
+        try:
+            int_month = int(month_input)
+        except:
+            workout_ids['month_input'].background_color = 1, 0, 0, 1
+            return
+
+        try:
+            int_day = int(day_input)
+        except:
+            workout_ids['day_input'].background_color = 1, 0, 0, 1
+            return
+
+        try:
+            int_year = int(year_input)
+        except:
+            workout_ids['year_input'].background_color = 1, 0, 0, 1
+            return
+
+        # もし、OKならFireBaseにpostする
+        workout_payload = {"workout_img": self.workout_image, "description": description_input,
+                           "likes": 0, "number": float(quantity_input), "type_image": self.option_choice,
+                           "units": units_input, "date": month_input+"/"+day_input+"/20"+year_input}
+        workout_request = requests.post(
+            f"{self.api_url}{self.local_id}/workouts.json?auth={self.id_token}", data=json.dumps(workout_payload))
+        print(workout_request.json())
 
     def change_screen(self, screen_name):
         screen_manager = self.root.ids["screen_manager"]

@@ -34,6 +34,8 @@
             size_hint:1,0.15
             ImageButton:
                 source:"icons/add.png"
+                on_release:
+                    app.change_screen("add_workout_screen")
             ImageButton:
                 source:"icons/friends_list.png"
                 on_release:
