@@ -1,11 +1,10 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, NoTransition, CardTransition
-from kivy.uix.button import ButtonBehavior
-from kivy.uix.image import Image
-from kivy.uix.label import Label
 from workoutbanner import WorkoutBanner
+from friendbanner import FriendBanner
 from functools import partial
+from specialbuttons import ImageButton, LabelButton
 from os import walk
 from myfirebase import MyFirebase
 import requests
@@ -28,19 +27,15 @@ class AddFriendScreen(Screen):
     pass
 
 
+class FriendsListScreen(Screen):
+    pass
+
+
 class AddWorkoutScreen(Screen):
     pass
 
 
 class LoginScreen(Screen):
-    pass
-
-
-class ImageButton(ButtonBehavior, Image):
-    pass
-
-
-class LabelButton(ButtonBehavior, Label):
     pass
 
 
@@ -96,6 +91,14 @@ class MainApp(App):
 
             # friendListをDBから取得
             self.friends_list = data["friends"]
+
+            # friendListの友達を表示
+            friends_list_array = self.friends_list.split(",")[1:]
+            for friend in friends_list_array:
+                friend = friend.replace(" ", "")
+                friend_banner = FriendBanner(friend_id=friend)
+                self.root.ids['friends_list_screen'].ids['friends_list_grid'].add_widget(
+                    friend_banner)
             # streakラベルをDBのdataから設定
             streak_label = self.root.ids["home_screen"].ids["streak_label"]
             streak_label.text = str(data['streak']) + " Day Streak!"
