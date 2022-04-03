@@ -1,3 +1,4 @@
 settings/secret_setting.json
 __pycache__/
 refres_token.txt
+.vscode
