@@ -90,7 +90,7 @@ class MainApp(App):
             # dbからデータ取得(idTokenを付与することでdbの読み取り/書き込みが可能に)
             result = requests.get(
                 f"{self.api_url}{local_id}.json?auth={id_token}")
-            print(result.ok)
+            print(f"token{result.ok}")
             print(result.json())
             data = json.loads(result.content.decode())
 
@@ -112,25 +112,28 @@ class MainApp(App):
             # 人気のトレーニングをホームスクリーンに表示
             banner_grid = self.root.ids["home_screen"].ids["banner_grid"]
             workouts = data["workouts"]
-            workout_keys = list(workouts.keys())
-            for workout_key in workout_keys:
-                workout = workouts[workout_key]
-                print(workout["workout_img"])
-                print(workout["description"])
-                w = WorkoutBanner(
-                    workout_img=workout["workout_img"],
-                    description=workout["description"],
-                    type_image=workout["type_image"],
-                    number=workout["number"],
-                    units=workout["units"],
-                    likes=workout["likes"])
-                banner_grid.add_widget(w)
+            if workouts != "":
+                workout_keys = list(workouts.keys())
+
+                for workout_key in workout_keys:
+                    workout = workouts[workout_key]
+                    print(workout["workout_img"])
+                    print(workout["description"])
+                    w = WorkoutBanner(
+                        workout_img=workout["workout_img"],
+                        description=workout["description"],
+                        type_image=workout["type_image"],
+                        number=workout["number"],
+                        units=workout["units"],
+                        likes=workout["likes"])
+                    banner_grid.add_widget(w)
 
             self.root.ids["screen_manager"].transition = NoTransition()
             self.change_screen("home_screen")
             self.root.ids["screen_manager"].transition = CardTransition()
 
-        except:
+        except Exception as e:
+            print(e)
             pass
 
     def add_friend(self, friend_id):
