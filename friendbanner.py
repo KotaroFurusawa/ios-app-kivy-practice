@@ -1,7 +1,8 @@
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from specialbuttons import ImageButton, LabelButton
-#from main import ImageButton
+from kivy.app import App
+from functools import partial
 import kivy.utils
 import requests
 import json
@@ -28,7 +29,7 @@ class FriendBanner(FloatLayout):
         their_avatar = data[unique_identifier]['avatar']
 
         image_button = ImageButton(
-            source="icons/avatars/"+their_avatar, size_hint=(.3, 1), pos_hint={"top": 1, "right": 0.4})
+            source="icons/avatars/"+their_avatar, size_hint=(.3, 1), pos_hint={"top": 1, "right": 0.4}, on_release=partial(App.get_running_app().load_friend_workout_screen, kwargs['friend_id']))
 
         # 友達のIDを追加
         friend_label = LabelButton(

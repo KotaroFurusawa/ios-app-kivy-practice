@@ -39,6 +39,10 @@ class LoginScreen(Screen):
     pass
 
 
+class FriendWorkoutScreen(Screen):
+    pass
+
+
 GUI = Builder.load_file("main.kv")
 
 
@@ -230,6 +234,41 @@ class MainApp(App):
         workout_request = requests.post(
             f"{self.api_url}{self.local_id}/workouts.json?auth={self.id_token}", data=json.dumps(workout_payload))
         print(workout_request.json())
+
+    def load_friend_workout_screen(self, friend_id, widget):
+        # friend_idを用いて、DBから友人のworkoutを取得する
+        friend_data_req = requests.get(
+            self.api_url+'.json?orderBy="my_friend_id"&equalTo='+friend_id)
+        friend_data = friend_data_req.json()
+        workouts = list(friend_data.values())[0]['workouts']
+        friend_banner_grid = self.root.ids['friend_workout_screen'].ids['friend_banner_grid']
+
+        # friend_banner_gridからすべてのwidgetを削除する
+        # これをしないと，前回呼び出したworkoutに加えてworkoutが表示されてしまう．
+        for w in friend_banner_grid.walk():
+            # WorkoutBannerクラスで生成されたwidgetのみ削除
+            if w.__class__ == WorkoutBanner:
+                friend_banner_grid.remove_widget(w)
+
+        # friend_workout_screenを表示
+        if workouts != "":
+            for key in list(workouts.keys()):
+                workout = workouts[key]
+                print(key, workout)
+                w = WorkoutBanner(
+                    workout_img=workout["workout_img"],
+                    description=workout["description"],
+                    type_image=workout["type_image"],
+                    number=workout["number"],
+                    units=workout["units"],
+                    likes=workout["likes"])
+                friend_banner_grid.add_widget(w)
+
+        # streak labelを追加する
+        friend_streak_label = self.root.ids['friend_workout_screen'].ids['friend_streak_label']
+        friend_streak_label.text = f"{list(friend_data.values())[0]['streak']} Day Streak!"
+        # friend_workout_screenに変更を加える
+        self.change_screen("friend_workout_screen")
 
     def change_screen(self, screen_name):
         screen_manager = self.root.ids["screen_manager"]

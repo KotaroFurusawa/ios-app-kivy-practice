@@ -1,0 +1,40 @@
+#: import utils kivy.utils
+
+<FriendWorkoutScreen>:
+    FloatLayout:
+        canvas:
+            #背景指定
+            Color: 
+                rgb:utils.get_color_from_hex("#39B3F2")
+            Rectangle:
+                size:self.size
+                pos:self.pos
+        Label:
+            #タイトル
+            pos_hint:{"top":1,"left":1} 
+            size_hint:1,0.1
+            id:friend_streak_label
+        ScrollView:
+            #この中はスクロール可能
+            pos_hint:{"top":0.9,"left":1} 
+            size_hint:1,0.75
+            GridLayout:
+                #workoutの一覧を表示
+                id:friend_banner_grid
+                cols:1
+                spacing:10,10
+                size_hint_y:None
+                height:self.minimum_height
+                row_default_height:"100dp"
+                row_force_default:True
+        
+        ImageButton:
+            pos_hint:{"top":0.15,"left":1} 
+            size_hint:1,0.15
+            source:"icons/back.png"
+            on_release:
+                app.change_screen("friends_list_screen")
+
+            
+            
+            
